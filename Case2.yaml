@@ -1,0 +1,157 @@
+openapi: 3.0.0
+
+info:
+  title:  «Рога и Копыта» список клиентов
+  version: 1.0.0
+servers:
+  - url: https://api.tinkoff.com
+paths:
+  /customers:
+    get:
+      summary: Получение списка клиентов
+      tags:
+        - customers
+      operationId: getAllCustomers 
+      responses:
+        '200':
+          description: Успешный ответ 
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/customers'
+        'default': 
+          description: Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Создание клиента
+      tags:
+        - customers
+      operationId: createCustomer
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/customer'
+      responses:
+        '200':
+          description: Успешный ответ 
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/customers'
+        'default': 
+          description: Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Error'
+  /customer/{customer_id}:
+    get:
+      summary: Получение клиента по ID
+      tags:
+        - customers
+      operationId: getCustomerByID
+      parameters:
+        - name: customer_id
+          in: path
+          required: true
+          description: ID покупателя
+          example: 3812931298RDH666228322
+          schema: 
+            type: string
+      responses:
+        '200':
+          description: Успешный ответ 
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/customer'
+        'default': 
+          description: Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Error'
+    delete: 
+      summary: Удаление клиента
+      tags:
+        - customers
+      operationId: deleteCustomerByID      
+      parameters:
+        - name: customer_id
+          in: path
+          required: true
+          description: ID покупателя
+          example: 3812931298RDH666228322
+          schema: 
+            type: string    
+      responses:
+        '200':
+          description: Успешное удаление данных 
+          content:
+            application/json: {}
+        'default': 
+          description: Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Error'    
+          
+components:
+  schemas:
+    customer:
+      type: object
+      required:
+        - surname
+        - name
+      properties: 
+        customer_id:
+          type: string
+          example: 3812931298RDH666228322
+          description: Персональный ID покупателя
+        customer_name:
+          type: string
+          example: Иван
+          description: Имя покупателя
+        customer_surname:
+          type: string
+          example: Иванов
+          description: Фамилия покупателя
+        customer_phone:
+          type: string
+          example: +7 993 992 73 44
+          description: Номер телефона покупателя
+        customer_mail:
+          type: string
+          example: tinkoff@mail.ru
+          description: Email покупателя
+        product_name:
+          type: string
+          example: Молоко
+          description: Наименование продукта
+        product_price:
+          type: number
+          format: float
+          exapmle: 200
+          description: Цена продукта
+        created_at:
+          type: string
+          format: date-time
+    customers:
+      type: array
+      items:
+        $ref: '#/components/schemas/customer'
+    Error:
+      type: object
+      required: 
+        - code
+        - message
+      properties: 
+        code:
+          type: integer
+        message:
+          type: string
